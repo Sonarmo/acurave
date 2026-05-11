@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Acurave — Site Next.js
 
-## Getting Started
+Landing page complète pour Acurave. Stack : Next.js 14 (App Router), TypeScript, Tailwind CSS.
 
-First, run the development server:
+## Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+app/
+  layout.tsx        → Font Montserrat + metadata SEO
+  page.tsx          → Assembly des sections
+  globals.css       → Reset, animations, scrollbar
+
+components/
+  StarField.tsx     → Particules interactives (souris + touch) + curseur custom
+  WaveHero.tsx      → Hero avec ondes animées + lettres en fadeUp
+  Nav.tsx           → Navigation + toggle FR/EN
+  Manifeste.tsx     → Section identité / manifeste
+  Roster.tsx        → Grille artistes (placeholder)
+  DemoForm.tsx      → Formulaire de soumission de démo
+  Newsletter.tsx    → Inscription événements
+  Footer.tsx        → Pied de page
+
+tailwind.config.ts  → Font + animations custom
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Copier les fichiers dans ton projet existant
+cp -r components/ ton-projet/components/
+cp app/page.tsx ton-projet/app/page.tsx
+cp app/layout.tsx ton-projet/app/layout.tsx
+cp app/globals.css ton-projet/app/globals.css
+cp tailwind.config.ts ton-projet/tailwind.config.ts
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Connexions à faire
 
-## Learn More
+### Formulaire démo (DemoForm.tsx)
+```tsx
+// Remplacer le handleSubmit par un appel à ton API
+const handleSubmit = async (e) => {
+  e.preventDefault()
+  const formData = new FormData(e.target)
+  await fetch('/api/demo', { method: 'POST', body: formData })
+  setSent(true)
+}
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Newsletter (Newsletter.tsx)
+```tsx
+// Brancher sur Brevo / Mailchimp
+await fetch('/api/newsletter', {
+  method: 'POST',
+  body: JSON.stringify({ email }),
+})
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Ajouter des artistes (Roster.tsx)
+```tsx
+const artists = [
+  { name: 'Nom Artiste', genre: 'Électronique' },
+  // ...
+]
+// Remplacer les slots par un map sur artists
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Mobile
+- Layout responsive : 1 colonne sur mobile, 2 colonnes sur desktop
+- Curseur custom masqué sur mobile (hidden md:block)
+- Touch events actifs sur les particules
+- Hero adaptatif : clamp(36px, 8vw, 60px) pour le titre
