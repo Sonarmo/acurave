@@ -117,17 +117,22 @@ export default function StarField() {
       curX = e.clientX;  curY = e.clientY
       cursor.style.left = curX + 'px'
       cursor.style.top  = curY + 'px'
+
+      if (!hasMouse) {
+        hasMouse = true
+        cursor.style.opacity = '1'
+        ring.style.opacity   = '1'
+      }
     }
-    const onMouseEnter = () => {
-      hasMouse = true
-      cursor.style.opacity = '1'
-      ring.style.opacity   = '1'
+
+    const onMouseLeave = (e: MouseEvent) => {
+      if (e.relatedTarget === null) {
+        hasMouse = false
+        cursor.style.opacity = '0'
+        ring.style.opacity   = '0'
+      }
     }
-    const onMouseLeave = () => {
-      hasMouse = false
-      cursor.style.opacity = '0'
-      ring.style.opacity   = '0'
-    }
+
     const onTouchStart = (e: TouchEvent) => {
       hasTouch = true
       touchX = e.touches[0].clientX
@@ -140,8 +145,7 @@ export default function StarField() {
     const onTouchEnd = () => { hasTouch = false }
 
     document.addEventListener('mousemove',  onMouseMove)
-    document.addEventListener('mouseenter', onMouseEnter)
-    document.addEventListener('mouseleave', onMouseLeave)
+    document.documentElement.addEventListener('mouseleave', onMouseLeave)
     document.addEventListener('touchstart', onTouchStart, { passive: true })
     document.addEventListener('touchmove',  onTouchMove,  { passive: true })
     document.addEventListener('touchend',   onTouchEnd,   { passive: true })
@@ -151,8 +155,7 @@ export default function StarField() {
       cancelAnimationFrame(ringId)
       window.removeEventListener('resize', resize)
       document.removeEventListener('mousemove',  onMouseMove)
-      document.removeEventListener('mouseenter', onMouseEnter)
-      document.removeEventListener('mouseleave', onMouseLeave)
+      document.documentElement.removeEventListener('mouseleave', onMouseLeave)
       document.removeEventListener('touchstart', onTouchStart)
       document.removeEventListener('touchmove',  onTouchMove)
       document.removeEventListener('touchend',   onTouchEnd)
@@ -172,7 +175,6 @@ export default function StarField() {
           zIndex: 1,
         }}
       />
-      {/* Dot — hidden on touch devices via JS, always rendered */}
       <div ref={cursorRef} style={{
         position: 'fixed',
         width: 5, height: 5,
@@ -184,7 +186,6 @@ export default function StarField() {
         transition: 'opacity 0.2s',
         zIndex: 200,
       }} />
-      {/* Ring */}
       <div ref={ringRef} style={{
         position: 'fixed',
         width: 28, height: 28,
