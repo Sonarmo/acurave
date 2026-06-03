@@ -1,32 +1,34 @@
-const S = {
-  section: {
-    position: 'relative' as const,
-    zIndex: 5,
-    padding: 'clamp(48px,6vw,80px) clamp(20px,5vw,40px)',
-    borderTop: '0.5px solid rgba(255,255,255,0.055)',
-  },
-  grid: {
-    display: 'grid' as const,
-    gridTemplateColumns: 'clamp(120px,15vw,180px) 1fr',
-    gap: 'clamp(24px,4vw,48px)',
-    alignItems: 'start',
-    maxWidth: 900,
-  },
-  sectionLabel: {
-    fontSize: 10,
-    letterSpacing: '0.3em',
-    color: 'rgba(255,255,255,0.18)',
-    textTransform: 'uppercase' as const,
-    lineHeight: 2,
-    paddingTop: 2,
-  },
-}
+'use client'
+
+import { useInView } from '@/lib/useInView'
 
 export default function Manifeste() {
+  const { ref, inView } = useInView()
   return (
-    <section style={S.section}>
-      <div style={S.grid} className="two-col-grid">
-        <div style={S.sectionLabel}>
+    <section ref={ref} style={{
+      position: 'relative' as const,
+      zIndex: 5,
+      padding: 'clamp(48px,6vw,80px) clamp(20px,5vw,40px)',
+      borderTop: '0.5px solid rgba(255,255,255,0.055)',
+      opacity: inView ? 1 : 0,
+      transform: inView ? 'none' : 'translateY(18px)',
+      transition: 'opacity 0.7s ease, transform 0.7s ease',
+    }}>
+      <div style={{
+        display: 'grid' as const,
+        gridTemplateColumns: 'clamp(120px,15vw,180px) 1fr',
+        gap: 'clamp(24px,4vw,48px)',
+        alignItems: 'start',
+        maxWidth: 900,
+      }} className="two-col-grid">
+        <div style={{
+          fontSize: 10,
+          letterSpacing: '0.3em',
+          color: 'rgba(255,255,255,0.18)',
+          textTransform: 'uppercase' as const,
+          lineHeight: 2,
+          paddingTop: 2,
+        }}>
           Ce qu'on est<br />
           <span style={{ color: 'rgba(255,255,255,0.1)' }}>What we are</span>
         </div>
